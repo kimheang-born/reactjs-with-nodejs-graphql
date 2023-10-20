@@ -57,17 +57,17 @@ class Feed extends Component {
     const graphqlQuery = {
       query: `
         {
-          posts {
-              posts {
-                  _id
-                  title
-                  content
-                  creator {
-                    name
-                  }
-                  createdAt
+          posts(page: ${page}) {
+            posts {
+              _id
+              title
+              content
+              creator {
+                name
               }
-              totalPosts
+              createdAt
+            }
+            totalPosts
           }
         }
       `,
@@ -75,7 +75,7 @@ class Feed extends Component {
     fetch('http://localhost:9090/graphql', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${this.props.token}`,
+        Authorization: 'Bearer ' + this.props.token,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(graphqlQuery),
@@ -84,7 +84,8 @@ class Feed extends Component {
         return res.json();
       })
       .then((resData) => {
-        if (resData.errors && resData.errors[0].status === 422) {
+        console.log(resData);
+        if (resData.errors) {
           throw new Error('Fetching posts failed!');
         }
         this.setState({
@@ -204,6 +205,7 @@ class Feed extends Component {
             );
             updatedPosts[postIndex] = post;
           } else {
+            updatedPosts.pop();
             updatedPosts.unshift(post);
           }
           return {
