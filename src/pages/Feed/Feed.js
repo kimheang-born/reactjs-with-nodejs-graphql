@@ -84,7 +84,6 @@ class Feed extends Component {
         return res.json();
       })
       .then((resData) => {
-        console.log(resData);
         if (resData.errors) {
           throw new Error('Fetching posts failed!');
         }
