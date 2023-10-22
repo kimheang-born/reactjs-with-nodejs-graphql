@@ -188,19 +188,28 @@ class Feed extends Component {
         const imageUrl = fileResData.filePath;
         let graphqlQuery = {
           query: `
-            mutation {
-              createPost(postInput: {title: "${postData.title}", content: "${postData.content}", imageUrl: "${imageUrl}"}) {
-                  _id
-                  title
-                  content
-                  imageUrl
-                  creator {
-                    name
-                  }
-                  createdAt
+            mutation CreateNewPost($title: String!, $content: String!, $imageUrl: String!) {
+              createPost(postInput: {
+                title: $title,
+                content: $content,
+                imageUrl: $imageUrl
+              }) {
+                _id
+                title
+                content
+                imageUrl
+                creator {
+                  name
                 }
+                createdAt
               }
-            `,
+            }
+          `,
+          variables: {
+            title: postData.title,
+            content: postData.content,
+            imageUrl,
+          },
         };
 
         if (this.state.editPost) {
